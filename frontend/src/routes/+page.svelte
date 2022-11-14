@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
+  import "iconify-icon";
 
   onMount(() => {
     if (browser) {
@@ -36,6 +37,10 @@
 
 <main>
   <section>
+    <div>
+      <iconify-icon icon="material-symbols:draw-rounded" style="font-size: 2em;" />
+      <h1>Draw away!</h1>
+    </div>
     <canvas id="board" />
   </section>
 </main>
@@ -45,6 +50,10 @@
 <style>
   :global(*) {
     margin: 0;
+  }
+
+  :global(html, body) {
+    overflow: hidden;
   }
 
   #background,
@@ -71,10 +80,19 @@
     z-index: 1;
     background-color: white;
     border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  section div {
+    margin: 2em;
+    display: flex;
+    align-items: center;
+    gap: 1em;
   }
 
   canvas {
-    height: 100%;
-    width: 100%;
+    flex: 1;
+    border-top: 2px solid #e5e5e5;
   }
 </style>
