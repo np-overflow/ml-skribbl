@@ -13,21 +13,40 @@
       canvas.width = canvas.offsetWidth;
 
       if (context) {
-        canvas.addEventListener("mousemove", (e) => {
+        const draw = (e: MouseEvent | TouchEvent) => {
           if (!isDrawing) return;
           context.lineWidth = 5;
           context.lineCap = "round";
           context.strokeStyle = "black";
-          context.lineTo(e.offsetX, e.offsetY);
+
+          var x, y;
+          if (e instanceof MouseEvent) {
+            x = e.offsetX;
+            y = e.offsetY;
+          } else {
+            x = e.touches[0].clientX - canvas.offsetLeft;
+            y = e.touches[0].clientY - canvas.offsetTop;
+          }
+          context.lineTo(x, y);
           context.stroke();
-        });
+        };
+
+        canvas.addEventListener("mousemove", (e) => draw(e));
+        canvas.addEventListener("touchmove", (e) => draw(e));
 
         canvas.addEventListener("mousedown", () => {
           isDrawing = true;
           context.beginPath();
         });
+        canvas.addEventListener("touchstart", () => {
+          isDrawing = true;
+          context.beginPath();
+        });
 
         canvas.addEventListener("mouseup", () => {
+          isDrawing = false;
+        });
+        canvas.addEventListener("touchend", () => {
           isDrawing = false;
         });
       }

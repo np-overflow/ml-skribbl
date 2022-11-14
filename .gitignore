@@ -8,3 +8,4 @@ frontend/package
 **/!.env.example
 backend/venv
 **/.vscode
+.vercel
