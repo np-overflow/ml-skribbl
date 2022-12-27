@@ -56,11 +56,23 @@
 
 <main>
   <section>
-    <div>
-      <iconify-icon icon="material-symbols:draw-rounded" style="font-size: 2em;" />
-      <h1>Draw away!</h1>
+    <div id="canvas">
+      <div class="heading">
+        <iconify-icon icon="material-symbols:draw-rounded" style="font-size: 2em;" />
+        <h1>Draw away!</h1>
+      </div>
+      <canvas id="board" />
     </div>
-    <canvas id="board" />
+    <div id="panel">
+      <div id="panel__server">
+        <h2>Server</h2>
+        <p>The game hasn't started yet. Give me a moment!</p>
+      </div>
+      <div id="panel__model">
+        <h2>Model</h2>
+        <p>Hurry up already...</p>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -94,24 +106,93 @@
   }
 
   section {
-    height: 75%;
-    width: 75%;
+    min-height: 75%;
+    min-width: 75%;
     z-index: 1;
     background-color: white;
     border-radius: 1rem;
     display: flex;
     flex-direction: column;
+    padding: 2em;
+    gap: 2em;
   }
 
-  section div {
-    margin: 2em;
+  @media screen and (min-width: 768px) {
+    section {
+      flex-direction: row;
+    }
+
+    #canvas {
+      height: auto;
+      flex: 1.75;
+    }
+  }
+
+  section > div {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     gap: 1em;
+    min-width: fit-content;
+  }
+
+  #canvas {
+    height: fit-content;
+  }
+
+  #panel {
+    flex: 1.25;
   }
 
   canvas {
+    aspect-ratio: 1/1;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+  }
+
+  .heading > * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  #panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2.5em;
+  }
+
+  #panel div {
+    padding: 2em 1em 1em 1em;
+    border-radius: 0.5rem;
+    position: relative;
+  }
+
+  #panel div h2 {
+    position: absolute;
+    top: -18px;
+    left: 0;
+    padding: 0 0.25em;
+    border-radius: 0.5rem;
+  }
+
+  #panel__server {
+    background-color: #ffe3ca;
     flex: 1;
-    border-top: 2px solid #e5e5e5;
+  }
+
+  #panel__server h2 {
+    background-color: #ff8e2c;
+    color: white;
+  }
+
+  #panel__model {
+    border: 2px dotted #ccc;
+    flex: 3;
+  }
+
+  #panel__model h2 {
+    background-color: white;
+    color: #ccc;
   }
 </style>
