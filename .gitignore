@@ -9,3 +9,4 @@ frontend/package
 backend/venv
 **/.vscode
 .vercel
+backend/drawings/*
