@@ -10,3 +10,4 @@ backend/venv
 **/.vscode
 .vercel
 backend/drawings/*
+drawings/*.png

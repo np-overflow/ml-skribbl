@@ -25,6 +25,8 @@
       return dataURL;
     });
 
+    console.log(resizedImage)
+
     const predictions = await fetch("http://localhost:5000/predict", {
       method: "POST",
       body: resizedImage

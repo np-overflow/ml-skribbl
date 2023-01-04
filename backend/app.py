@@ -4,8 +4,12 @@ import datetime
 import base64
 from PIL import Image
 from model import DrawModel
+from flask_cors import CORS, cross_origin
+
 
 app = Flask(__name__)
+cors = CORS(app)
+
 category = "test"
 
 
@@ -15,6 +19,7 @@ def hello_world():
 
 
 @app.route("/transform", methods=["POST"])
+@cross_origin()
 def transform():
     if not os.path.exists("drawings/"):
         os.mkdir("drawings")
@@ -25,16 +30,19 @@ def transform():
     current_timestring = datetime.datetime.now().strftime("%d%m%y%H%M%S")
     image_name = f"{current_timestring}-{category}.png"
 
-    with open(f"drawings/{image_name}", "wb") as f:
+    image_path = os.path.join("drawings", image_name)
+
+    with open(image_path, "wb") as f:
         f.write(base64.b64decode(image_data))
 
-    image = Image.open(f"drawings/{image_name}").resize((28, 28))
-    image.save(f"drawings/{image_name}")
+    image = Image.open(image_path).resize((28, 28))
+    image.save(image_path)
 
-    return send_file(f"drawings/{image_name}")
+    return send_file(image_path)
 
 
 @app.route("/predict", methods=["POST"])
+@cross_origin()
 def predict():
     image_data = request.get_data(
         "image_data")
@@ -45,6 +53,7 @@ def predict():
 
 
 @app.route("/purge")
+@cross_origin()
 def purge():
     for file in os.listdir("drawings/"):
         os.remove(f"drawings/{file}")

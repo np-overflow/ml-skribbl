@@ -3,3 +3,4 @@ tensorflow
 numpy
 Pillow
 matplotlib
+flask-cors
