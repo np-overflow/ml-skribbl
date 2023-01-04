@@ -4,6 +4,7 @@
   import "iconify-icon";
 
   var time = 30;
+  var timer: NodeJS.Timer;
 
   const clearCanvas = () => {
     const canvas = document.getElementById("board") as HTMLCanvasElement,
@@ -75,9 +76,12 @@
         serverMessage.innerHTML = "Good attempt!";
       }
     }
+
+    clearCanvas();
   };
 
   const startGame = async () => {
+    time = 30;
     const modelMessage = document.querySelector("#panel__model p");
     const serverMessage = document.querySelector("#panel__server p");
     const headerMessage = document.querySelector(".heading > h1");
@@ -91,7 +95,7 @@
     const category = await fetch("http://localhost:5000/start", {
       method: "GET"
     }).then((response) => {
-      const timer = setInterval(() => {
+      timer = setInterval(() => {
         if (time > 0 && headerMessage) {
           time--;
           headerMessage.innerHTML = "Draw away! " + time + " seconds left";
@@ -180,6 +184,14 @@
       </div>
       <canvas id="board" />
       <button on:click={() => clearCanvas()}>Clear board</button>
+      <button
+        on:click={() => {
+          time = 0;
+          endGame(Condition.LOSE);
+          clearInterval(timer);
+          startGame();
+        }}>Skip round</button
+      >
     </div>
     <div id="panel">
       <div id="panel__server">
