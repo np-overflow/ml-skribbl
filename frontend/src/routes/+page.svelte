@@ -3,6 +3,34 @@
   import { onMount } from "svelte";
   import "iconify-icon";
 
+  const convertBlobToDataURL = (blob: Blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const predictImage = async (canvas: HTMLCanvasElement) => {
+    const imageContent = canvas.toDataURL("image/png");
+    const resizedImage = await fetch("http://localhost:5000/transform", {
+      method: "POST",
+      body: imageContent
+    }).then(async (response) => {
+      const blob = await response.blob();
+      const dataURL = (await convertBlobToDataURL(blob)) as string;
+      return dataURL;
+    });
+
+    const predictions = await fetch("http://localhost:5000/predict", {
+      method: "POST",
+      body: resizedImage
+    });
+  };
+
   onMount(() => {
     if (browser) {
       const canvas = document.getElementById("board") as HTMLCanvasElement,
@@ -45,9 +73,11 @@
 
         canvas.addEventListener("mouseup", () => {
           isDrawing = false;
+          predictImage(canvas);
         });
         canvas.addEventListener("touchend", () => {
           isDrawing = false;
+          predictImage(canvas);
         });
       }
     }
