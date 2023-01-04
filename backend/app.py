@@ -5,22 +5,34 @@ import base64
 from PIL import Image
 from model import DrawModel
 from flask_cors import CORS, cross_origin
+import random
+import json
 
 
 app = Flask(__name__)
 cors = CORS(app)
+category = None
 
-category = "test"
+# @app.route('/')
+# def hello_world():
+#     return 'Hello, World!'
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
+@app.route("/start", methods=["GET"])
+def start():
+    global category
+    categories = DrawModel("models/fruits.h5").categories
+    category = categories[random.randint(0, len(categories) - 1)]
+    return category
 
 
 @app.route("/transform", methods=["POST"])
 @cross_origin()
 def transform():
+    global category
+    if category is None:
+        return "No category selected; is a game initiated?", 400
+
     if not os.path.exists("drawings/"):
         os.mkdir("drawings")
 
@@ -44,12 +56,15 @@ def transform():
 @app.route("/predict", methods=["POST"])
 @cross_origin()
 def predict():
+    global category
+    if category is None:
+        return "No category selected; is a game initiated?", 400
+
     image_data = request.get_data(
         "image_data")
-    print(image_data)
     model = DrawModel("models/fruits.h5")
-    model.predict(image_data)
-    return "OK!"
+    predictions = model.predict(image_data)
+    return predictions
 
 
 @app.route("/purge")
