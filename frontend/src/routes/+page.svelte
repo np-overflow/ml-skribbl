@@ -99,7 +99,6 @@
           endGame(Condition.LOSE);
           clearInterval(timer);
         }
-        console.log(time);
       }, 1000);
       return response.text();
     });
@@ -143,21 +142,29 @@
         canvas.addEventListener("touchmove", (e) => draw(e));
 
         canvas.addEventListener("mousedown", () => {
-          isDrawing = true;
-          context.beginPath();
+          if (time > 0) {
+            isDrawing = true;
+            context.beginPath();
+          }
         });
         canvas.addEventListener("touchstart", () => {
-          isDrawing = true;
-          context.beginPath();
+          if (time > 0) {
+            isDrawing = true;
+            context.beginPath();
+          }
         });
 
         canvas.addEventListener("mouseup", () => {
-          isDrawing = false;
-          predictImage(canvas);
+          if (time > 0) {
+            isDrawing = false;
+            predictImage(canvas);
+          }
         });
         canvas.addEventListener("touchend", () => {
-          isDrawing = false;
-          predictImage(canvas);
+          if (time > 0) {
+            isDrawing = false;
+            predictImage(canvas);
+          }
         });
       }
     }
