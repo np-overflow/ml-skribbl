@@ -25,12 +25,30 @@
       return dataURL;
     });
 
-    console.log(resizedImage)
-
     const predictions = await fetch("http://localhost:5000/predict", {
       method: "POST",
       body: resizedImage
-    });
+    }).then((response) => response.text());
+
+    const modelMessage = document.querySelector("#panel__model");
+    const startingModelMessage = document.querySelector("#panel__model__start");
+    if (modelMessage) {
+      startingModelMessage?.remove();
+      const guessElement = document.createElement("p");
+      guessElement.innerHTML = "I think you drew a(n) " + predictions + "!";
+      modelMessage.appendChild(guessElement);
+    }
+  };
+
+  const startGame = async () => {
+    const category = await fetch("http://localhost:5000/start", {
+      method: "GET"
+    }).then((response) => response.text());
+
+    const serverMessage = document.querySelector("#panel__server p");
+    if (serverMessage) {
+      serverMessage.innerHTML = "Draw a(n) " + category + "!";
+    }
   };
 
   onMount(() => {
@@ -41,6 +59,7 @@
 
       canvas.height = canvas.offsetHeight;
       canvas.width = canvas.offsetWidth;
+      startGame();
 
       if (context) {
         const draw = (e: MouseEvent | TouchEvent) => {
@@ -102,7 +121,7 @@
       </div>
       <div id="panel__model">
         <h2>Model</h2>
-        <p>Hurry up already...</p>
+        <p id="panel__model__start">Hurry up already...</p>
       </div>
     </div>
   </section>
