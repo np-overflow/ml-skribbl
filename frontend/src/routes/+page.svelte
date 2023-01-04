@@ -3,6 +3,8 @@
   import { onMount } from "svelte";
   import "iconify-icon";
 
+  var time = 30;
+
   const clearCanvas = () => {
     const canvas = document.getElementById("board") as HTMLCanvasElement,
       context = canvas.getContext("2d");
@@ -57,17 +59,51 @@
     }
   };
 
+  enum Condition {
+    WIN,
+    LOSE
+  }
+
+  const endGame = (condition: Condition) => {
+    const serverMessage = document.querySelector("#panel__server p");
+    if (condition === Condition.WIN) {
+      if (serverMessage) {
+        serverMessage.innerHTML = "Awesome!";
+      }
+    } else {
+      if (serverMessage) {
+        serverMessage.innerHTML = "Good attempt!";
+      }
+    }
+  };
+
   const startGame = async () => {
     const modelMessage = document.querySelector("#panel__model p");
+    const serverMessage = document.querySelector("#panel__server p");
+    const headerMessage = document.querySelector(".heading > h1");
     if (modelMessage) {
       modelMessage.remove();
+    }
+    if (serverMessage) {
+      serverMessage.innerHTML = "Thinking of something for you to draw...";
     }
 
     const category = await fetch("http://localhost:5000/start", {
       method: "GET"
-    }).then((response) => response.text());
+    }).then((response) => {
+      const timer = setInterval(() => {
+        if (time > 0 && headerMessage) {
+          time--;
+          headerMessage.innerHTML = "Draw away! " + time + " seconds left";
+        } else {
+          endGame(Condition.LOSE);
+          clearInterval(timer);
+        }
+        console.log(time);
+      }, 1000);
+      return response.text();
+    });
 
-    const serverMessage = document.querySelector("#panel__server p");
     if (serverMessage) {
       const article = category.match(/^[AEIOU]/i) ? "an" : "a";
       serverMessage.innerHTML = "Draw " + article + " " + category + "!";
@@ -133,7 +169,7 @@
     <div id="canvas">
       <div class="heading">
         <iconify-icon icon="material-symbols:draw-rounded" style="font-size: 2em;" />
-        <h1>Draw away!</h1>
+        <h1>Draw away! {time} seconds left</h1>
       </div>
       <canvas id="board" />
       <button on:click={() => clearCanvas()}>Clear board</button>
