@@ -5,6 +5,7 @@
 
   var time = 30;
   var timer: NodeJS.Timer;
+  var category: string;
 
   const clearCanvas = () => {
     const canvas = document.getElementById("board") as HTMLCanvasElement,
@@ -58,6 +59,11 @@
 
       modelMessage.insertBefore(guessElement, modelMessage.childNodes[1]);
     }
+
+    if (predictions === category) {
+      endGame(Condition.WIN);
+      clearInterval(timer);
+    }
   };
 
   enum Condition {
@@ -66,18 +72,31 @@
   }
 
   const endGame = (condition: Condition) => {
+    clearInterval(timer);
     const serverMessage = document.querySelector("#panel__server p");
+    const modelMessage = document.querySelector("#panel__model p");
     if (condition === Condition.WIN) {
-      if (serverMessage) {
-        serverMessage.innerHTML = "Awesome!";
+      if (serverMessage && modelMessage) {
+        serverMessage.innerHTML = "Awesome! Starting new game soon...";
+        modelMessage.innerHTML = "Great! It took me " + (30 - time) + " seconds to guess it!";
       }
     } else {
       if (serverMessage) {
-        serverMessage.innerHTML = "Good attempt!";
+        serverMessage.innerHTML = "Good attempt! Starting new game soon...";
       }
     }
 
     clearCanvas();
+
+    const pause = setTimeout(() => {
+      startGame();
+      clearTimeout(pause);
+      const modelPanel = document.querySelector("#panel__model");
+      if (modelPanel) {
+        const pTags = modelPanel.querySelectorAll("p");
+        pTags.forEach((p) => p.remove());
+      }
+    }, 3000);
   };
 
   const startGame = async () => {
@@ -92,7 +111,7 @@
       serverMessage.innerHTML = "Thinking of something for you to draw...";
     }
 
-    const category = await fetch("http://localhost:5000/start", {
+    category = await fetch("http://localhost:5000/start", {
       method: "GET"
     }).then((response) => {
       timer = setInterval(() => {
@@ -188,8 +207,6 @@
         on:click={() => {
           time = 0;
           endGame(Condition.LOSE);
-          clearInterval(timer);
-          startGame();
         }}>Skip round</button
       >
     </div>
