@@ -3,6 +3,7 @@ import os
 import datetime
 import base64
 from PIL import Image
+from model import DrawModel
 
 app = Flask(__name__)
 category = "test"
@@ -33,7 +34,17 @@ def transform():
     return send_file(f"drawings/{image_name}")
 
 
-@ app.route("/purge")
+@app.route("/predict", methods=["POST"])
+def predict():
+    image_data = request.get_data(
+        "image_data")
+    print(image_data)
+    model = DrawModel("models/fruits.h5")
+    model.predict(image_data)
+    return "OK!"
+
+
+@app.route("/purge")
 def purge():
     for file in os.listdir("drawings/"):
         os.remove(f"drawings/{file}")
