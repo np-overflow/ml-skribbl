@@ -3,6 +3,14 @@
   import { onMount } from "svelte";
   import "iconify-icon";
 
+  const clearCanvas = () => {
+    const canvas = document.getElementById("board") as HTMLCanvasElement,
+      context = canvas.getContext("2d");
+    if (context) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  };
+
   const convertBlobToDataURL = (blob: Blob) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -113,6 +121,7 @@
         <h1>Draw away!</h1>
       </div>
       <canvas id="board" />
+      <button on:click={() => clearCanvas()}>Clear board</button>
     </div>
     <div id="panel">
       <div id="panel__server">
@@ -245,5 +254,19 @@
   #panel__model h2 {
     background-color: white;
     color: #ccc;
+  }
+
+  button {
+    appearance: none;
+    border: none;
+    background-color: #eee;
+    padding: 0.75em;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+  }
+
+  button:hover {
+    background-color: #ddd;
   }
 </style>
