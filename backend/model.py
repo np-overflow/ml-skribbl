@@ -19,7 +19,20 @@ class DrawModel:
     def __init__(self, path) -> None:
         self.path = path
         self.model = tf.keras.models.load_model(self.path)
-        self.categories = {0: "Apple", 1: "Banana", 2: "Grape", 3: "Pineapple"}
+        self.categories = {
+            0: "Book",
+            1: "Calculator",
+            2: "Camera",
+            3: "Computer",
+            4: "Envelope",
+            5: "Headphones",
+            6: "Laptop",
+            7: "Mouse",
+            8: "Radio",
+            9: "Spreadsheet",
+            10: "Telephone",
+            11: "Television",
+        }
 
     def predict(self, image_data):
         image = PIL.Image.open(io.BytesIO(base64.b64decode(
