@@ -3,6 +3,10 @@
   import { onMount } from "svelte";
   import "iconify-icon";
 
+  var time = 30;
+  var timer: NodeJS.Timer;
+  var category: string;
+
   const clearCanvas = () => {
     const canvas = document.getElementById("board") as HTMLCanvasElement,
       context = canvas.getContext("2d");
@@ -55,19 +59,73 @@
 
       modelMessage.insertBefore(guessElement, modelMessage.childNodes[1]);
     }
+
+    if (predictions === category) {
+      endGame(Condition.WIN);
+      clearInterval(timer);
+    }
+  };
+
+  enum Condition {
+    WIN,
+    LOSE
+  }
+
+  const endGame = (condition: Condition) => {
+    clearInterval(timer);
+    const serverMessage = document.querySelector("#panel__server p");
+    const modelMessage = document.querySelector("#panel__model p");
+    if (condition === Condition.WIN) {
+      if (serverMessage && modelMessage) {
+        serverMessage.innerHTML = "Awesome! Starting new game soon...";
+        modelMessage.innerHTML = "Great! It took me " + (30 - time) + " seconds to guess it!";
+      }
+    } else {
+      if (serverMessage) {
+        serverMessage.innerHTML = "Good attempt! Starting new game soon...";
+      }
+    }
+
+    clearCanvas();
+
+    const pause = setTimeout(() => {
+      startGame();
+      clearTimeout(pause);
+      const modelPanel = document.querySelector("#panel__model");
+      if (modelPanel) {
+        const pTags = modelPanel.querySelectorAll("p");
+        pTags.forEach((p) => p.remove());
+      }
+    }, 3000);
   };
 
   const startGame = async () => {
+    time = 30;
     const modelMessage = document.querySelector("#panel__model p");
+    const serverMessage = document.querySelector("#panel__server p");
+    const headerMessage = document.querySelector(".heading > h1");
     if (modelMessage) {
       modelMessage.remove();
     }
+    if (serverMessage) {
+      serverMessage.innerHTML = "Thinking of something for you to draw...";
+    }
 
-    const category = await fetch("http://localhost:5000/start", {
+    category = await fetch("http://localhost:5000/start", {
       method: "GET"
-    }).then((response) => response.text());
+    }).then((response) => {
+      timer = setInterval(() => {
+        if (time > 0 && headerMessage) {
+          time--;
+          headerMessage.innerHTML = "Draw away! " + time + " seconds left";
+        } else {
+          endGame(Condition.LOSE);
+          clearInterval(timer);
+        }
+      }, 1000);
+      return response.text();
+    });
 
-    const serverMessage = document.querySelector("#panel__server p");
     if (serverMessage) {
       const article = category.match(/^[AEIOU]/i) ? "an" : "a";
       serverMessage.innerHTML = "Draw " + article + " " + category + "!";
@@ -107,21 +165,29 @@
         canvas.addEventListener("touchmove", (e) => draw(e));
 
         canvas.addEventListener("mousedown", () => {
-          isDrawing = true;
-          context.beginPath();
+          if (time > 0) {
+            isDrawing = true;
+            context.beginPath();
+          }
         });
         canvas.addEventListener("touchstart", () => {
-          isDrawing = true;
-          context.beginPath();
+          if (time > 0) {
+            isDrawing = true;
+            context.beginPath();
+          }
         });
 
         canvas.addEventListener("mouseup", () => {
-          isDrawing = false;
-          predictImage(canvas);
+          if (time > 0) {
+            isDrawing = false;
+            predictImage(canvas);
+          }
         });
         canvas.addEventListener("touchend", () => {
-          isDrawing = false;
-          predictImage(canvas);
+          if (time > 0) {
+            isDrawing = false;
+            predictImage(canvas);
+          }
         });
       }
     }
@@ -133,10 +199,16 @@
     <div id="canvas">
       <div class="heading">
         <iconify-icon icon="material-symbols:draw-rounded" style="font-size: 2em;" />
-        <h1>Draw away!</h1>
+        <h1>Draw away! {time} seconds left</h1>
       </div>
       <canvas id="board" />
       <button on:click={() => clearCanvas()}>Clear board</button>
+      <button
+        on:click={() => {
+          time = 0;
+          endGame(Condition.LOSE);
+        }}>Skip round</button
+      >
     </div>
     <div id="panel">
       <div id="panel__server">
