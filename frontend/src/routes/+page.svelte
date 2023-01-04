@@ -42,20 +42,35 @@
     const startingModelMessage = document.querySelector("#panel__model__start");
     if (modelMessage) {
       startingModelMessage?.remove();
+      const choices = [
+        "Looks like ",
+        "I think it's ",
+        "I'm guessing it's ",
+        "I'm pretty sure it's "
+      ];
+      const article = predictions.match(/^[AEIOU]/i) ? "an" : "a";
       const guessElement = document.createElement("p");
-      guessElement.innerHTML = "I think you drew a(n) " + predictions + "!";
-      modelMessage.appendChild(guessElement);
+      guessElement.innerHTML =
+        choices[Math.floor(Math.random() * choices.length)] + article + " " + predictions + "!";
+
+      modelMessage.insertBefore(guessElement, modelMessage.childNodes[1]);
     }
   };
 
   const startGame = async () => {
+    const modelMessage = document.querySelector("#panel__model p");
+    if (modelMessage) {
+      modelMessage.remove();
+    }
+
     const category = await fetch("http://localhost:5000/start", {
       method: "GET"
     }).then((response) => response.text());
 
     const serverMessage = document.querySelector("#panel__server p");
     if (serverMessage) {
-      serverMessage.innerHTML = "Draw a(n) " + category + "!";
+      const article = category.match(/^[AEIOU]/i) ? "an" : "a";
+      serverMessage.innerHTML = "Draw " + article + " " + category + "!";
     }
   };
 
