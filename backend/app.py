@@ -17,12 +17,16 @@ category = None
 # def hello_world():
 #     return 'Hello, World!'
 
+BLACKLIST = ["Calculator", "Mouse", "Laptop"]
+
 
 @app.route("/start", methods=["GET"])
 def start():
     global category
-    categories = DrawModel("models/fruits.h5").categories
+    categories = DrawModel("models/model.h5").categories
     category = categories[random.randint(0, len(categories) - 1)]
+    while category in BLACKLIST:
+        category = categories[random.randint(0, len(categories) - 1)]
     return category
 
 
@@ -62,7 +66,7 @@ def predict():
 
     image_data = request.get_data(
         "image_data")
-    model = DrawModel("models/fruits.h5")
+    model = DrawModel("models/model.h5")
     predictions = model.predict(image_data)
     return predictions
 

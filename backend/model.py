@@ -19,43 +19,39 @@ class DrawModel:
     def __init__(self, path) -> None:
         self.path = path
         self.model = tf.keras.models.load_model(self.path)
-        self.categories = {0: "Apple", 1: "Banana", 2: "Grape", 3: "Pineapple"}
+        self.categories = {
+            0: "Book",
+            1: "Calculator",
+            2: "Camera",
+            3: "Computer",
+            4: "Envelope",
+            5: "Headphones",
+            6: "Laptop",
+            7: "Mouse",
+            8: "Radio",
+            9: "Spreadsheet",
+            10: "Telephone",
+            11: "Television",
+        }
 
     def predict(self, image_data):
         image = PIL.Image.open(io.BytesIO(base64.b64decode(
             image_data.removeprefix(b"data:image/png;base64,"))))
 
-        # Create a white rgba background
+        # Creates a new image with a white background using the RGBA mode.
         new_image = Image.new("RGBA", image.size, "WHITE")
-        # Paste the image on the background. Go to the links given below for details.
+        # Pastes the user-drawn image on the background. Go to the links given below for details.
         new_image.paste(image, (0, 0), image)
-        new_image.convert('RGB').save('test.jpg', "JPEG")  # Save as JPEG
 
         image = new_image.convert("L")
         image = image.resize((28, 28))
         image = np.array(image)
 
-        print(type(image))
-
-        # Transform the image
+        # Transforms the image to fit the model.
         image = np.expand_dims(image, axis=0)
         image = np.invert(image)
 
-        # Get Dimensions
-        # print(f"(RAW) Image Input Dimensions: {image_raw.shape}")
-        # print(f"Image Input Dimensions: {image.shape}")
-        # print(f"Model Input Dimensions: {self.model.input_shape}")
-
-        # # image = normalize(list(image))
-        # # plt.imshow(image)
-        # # plt.show()
-        # print(image)
-        # print(image.shape)
-        # # image = image.reshape(1, 28, 28, 1)
-        # # plt.imshow(image)
-        # # plt.show()
-
-        # Make Prediction
+        # Makes a prediction using the model.
         predictions = self.model.predict(image)
         print(f">> Confidence Scores: {predictions}")
         predictions_raw = predictions[0]
