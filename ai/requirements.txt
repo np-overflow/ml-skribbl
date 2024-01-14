@@ -1,0 +1,8 @@
+# Tensorflow with cuda support.
+tf-nightly[and-cuda]==2.16.0.dev20240101
+keras
+scikit-learn
+numpy
+np_utils
+pillow
+requests

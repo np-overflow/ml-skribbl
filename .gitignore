@@ -12,3 +12,4 @@ backend/venv
 .vercel
 backend/drawings/*
 drawings/*.png
+**/**venv**/
