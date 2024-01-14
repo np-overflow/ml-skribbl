@@ -20,18 +20,12 @@ class DrawModel:
         self.path = path
         self.model = tf.keras.models.load_model(self.path)
         self.categories = {
-            0: "Book",
-            1: "Calculator",
-            2: "Camera",
-            3: "Computer",
-            4: "Envelope",
-            5: "Headphones",
-            6: "Laptop",
-            7: "Mouse",
-            8: "Radio",
-            9: "Spreadsheet",
-            10: "Telephone",
-            11: "Television",
+            0: "Calculator",
+            1: "Camera",
+            2: "Computer",
+            3: "Headphones",
+            4: "Mouse",
+            5: "Telephone",
         }
 
     def predict(self, image_data):
@@ -57,7 +51,6 @@ class DrawModel:
         predictions_raw = predictions[0]
         predictions = self.categories[np.argmax(predictions)]
         print(predictions)
-        print("\n"*10)
         predictions_data = {}
         for i in range(len(self.categories) - 1):
             predictions_data[self.categories[i]] = predictions_raw[i]
