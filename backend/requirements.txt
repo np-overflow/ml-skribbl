@@ -1,5 +1,6 @@
 flask
-tensorflow
+tf-nightly[and-cuda]==2.16.0.dev20240101
+keras
 numpy
 Pillow
 matplotlib
