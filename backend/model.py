@@ -1,3 +1,4 @@
+import os
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import PIL
@@ -19,14 +20,13 @@ class DrawModel:
     def __init__(self, path) -> None:
         self.path = path
         self.model = tf.keras.models.load_model(self.path)
-        self.categories = {
-            0: "Calculator",
-            1: "Camera",
-            2: "Computer",
-            3: "Headphones",
-            4: "Mouse",
-            5: "Telephone",
-        }
+        self.categories = {}
+        data_dir = os.path.join(os.getcwd(), "../ai/data")
+
+        for index, file in enumerate(os.listdir(data_dir)):
+            if file.endswith(".npy"):
+                self.categories[index] = file.split(".")[0].title()
+        print(self.categories)
 
     def predict(self, image_data):
         image = PIL.Image.open(io.BytesIO(base64.b64decode(

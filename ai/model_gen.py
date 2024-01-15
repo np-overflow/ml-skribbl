@@ -8,25 +8,22 @@ import os
 from PIL import Image
 
 # Creates a dictionary with all the categories.
-CATEGORIES = {
-    0: "Calculator",
-    1: "Camera",
-    2: "Computer",
-    3: "Headphones",
-    4: "Mouse",
-    5: "Telephone",
-}
-N_CATEGORIES = len(CATEGORIES)
+categories = {}
 
 # Defines the number of drawings per category to take in.
-N = 7500
+N = 10000
 
 # Defines the number of epochs (iterations of training) the model will undergo.
-N_EPOCHS = 10
+N_EPOCHS = 8
 
-# The files to learn from. They MUST match the information in CATEGORIES for proper classification.
-files = ["calculator.npy", "camera.npy", "computer.npy",
-         "headphones.npy", "mouse.npy", "telephone.npy"]
+# The files to learn from. They MUST match the information in categories for proper classification.
+files = []
+data_dir = os.path.join(os.getcwd(), "data")
+for index, file in enumerate(os.listdir(data_dir)):
+    if file.endswith(".npy"):
+        categories[index] = file.split(".")[0].title()
+        files.append(file)
+N_CATEGORIES = len(categories)
 
 
 def load(dir, reshaped, files):

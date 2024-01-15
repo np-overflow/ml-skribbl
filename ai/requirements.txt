@@ -1,5 +1,5 @@
 # Tensorflow with cuda support.
-tf-nightly[and-cuda]==2.16.0.dev20240101
+tf-nightly[and-cuda]
 keras
 scikit-learn
 numpy
