@@ -139,5 +139,5 @@ for i in range(len(preds)):
 print("Accuracy:", ((score + 0.0) / len(preds)) * 100)
 
 # Saves the model as a Keras H5 (.h5) file.
-model.save("out/temp.keras")
+model.save("out/model.keras")
 print("Model saved")
