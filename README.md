@@ -1,4 +1,4 @@
-# ml-skribbl
+![WhatsApp Image 2024-02-13 at 00 33 01_2ce09196](https://github.com/np-overflow/ml-skribbl/assets/105436607/b7a9e43c-f494-4275-b2f5-435154b0a75b)# ml-skribbl
 
 This repository contains the source code for Overflow's ML Skribbl game, presented during Ngee Ann Polytechnic's 2023 Open House. This project was made using Svelte for the front-end, Flask for the back-end, and Keras (TensorFlow) for the model training.
 
@@ -6,7 +6,7 @@ This repository contains the source code for Overflow's ML Skribbl game, present
 
 The model architecture used for this project is a Convolutional Neural Network (CNN), which is designed to process image data efficiently and effectively. The CNN architecture consists of several layers:
 
-![Uploading WhatsApp Image 2024-02-13 at 00.33.01_8e5b274d.jpg…]()
+![WhatsApp Image 2024-02-13 at 00 33 01_2ce09196](https://github.com/np-overflow/ml-skribbl/assets/105436607/e4b3350f-2c17-48ba-a753-0f1a9d3a9867)
 
 1. **Input Layer**: The input images are resized to 64x64 pixels and have a single channel (black and white).
 2. **Convolutional Layers**: The CNN starts with two convolutional layers with 32 filters each, followed by max-pooling layers to downsample the feature maps.
