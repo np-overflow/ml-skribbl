@@ -1,4 +1,4 @@
-![WhatsApp Image 2024-02-13 at 00 33 01_2ce09196](https://github.com/np-overflow/ml-skribbl/assets/105436607/b7a9e43c-f494-4275-b2f5-435154b0a75b)# ml-skribbl
+# Machine Learning Skribbl Game
 
 This repository contains the source code for Overflow's ML Skribbl game, presented during Ngee Ann Polytechnic's 2023 Open House. This project was made using Svelte for the front-end, Flask for the back-end, and Keras (TensorFlow) for the model training.
 
