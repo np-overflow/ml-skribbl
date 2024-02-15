@@ -23,7 +23,7 @@ BLACKLIST = []
 @app.route("/start", methods=["GET"])
 def start():
     global category
-    categories = DrawModel("models/model.keras").categories
+    categories = DrawModel("models/modelbatchNorm.h5").categories
     category = categories[random.randint(0, len(categories) - 1)]
     while category in BLACKLIST:
         category = categories[random.randint(0, len(categories) - 1)]
@@ -66,7 +66,7 @@ def predict():
 
     image_data = request.get_data(
         "image_data")
-    model = DrawModel("models/model.keras")
+    model = DrawModel("models/modelbatchNorm.h5")
     predictions = model.predict(image_data)
     return predictions
 

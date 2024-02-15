@@ -38,7 +38,7 @@ class DrawModel:
         new_image.paste(image, (0, 0), image)
 
         image = new_image.convert("L")
-        image = image.resize((28, 28))
+        image = image.resize((64, 64))
         image = np.array(image)
 
         # Transforms the image to fit the model.
